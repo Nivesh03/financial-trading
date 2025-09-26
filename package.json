@@ -1,0 +1,22 @@
+{
+  "name": "financial-trading",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "bun --filter '*' dev",
+    "start": "bun --filter '*' start",
+    "db:generate": "bun --filter server db:generate",
+    "db:migrate": "bun --filter server db:migrate",
+    "db:studio": "bun --filter server db:studio",
+    "db:push": "bun --filter server db:push"
+  },
+  "devDependencies": {},
+  "peerDependencies": {
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {}
+}
