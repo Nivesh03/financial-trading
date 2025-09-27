@@ -1,10 +1,8 @@
 import type { Request, Response } from "express";
-import { db } from "../db/drizzle";
-import { handleError, handleSuccess } from "../utils/response";
-import { eq } from "drizzle-orm";
-import { mutualFund, product, stock } from "../db/schema";
 import z from "zod";
+import { db } from "../db/drizzle";
 import { getProductDetails } from "../services/product-services";
+import { handleError, handleSuccess } from "../utils/response";
 
 export const getProducts = async (req: Request, res: Response) => {
   try {

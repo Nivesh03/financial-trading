@@ -1,11 +1,14 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 import MaxWidthWrapper from "./max-width-wrapper";
-import { Button } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
 import IsLoggedIn from "./is-logged-in";
 import IsLoggedOut from "./is-logged-out";
 import { useLogOut } from "@/hooks/use-user";
+import { ArrowRight } from "lucide-react";
 
 const Navbar = () => {
+  const { pathname } = useLocation();
+  const isProductPage = pathname.includes("products");
   const signOut = useLogOut();
   const handleSignOut = () => {
     signOut.mutate();
@@ -40,6 +43,17 @@ const Navbar = () => {
                 <Link to="/sign-in">Sign In</Link>
               </Button>
             </IsLoggedOut>
+            {!isProductPage && (
+              <Link
+                to="/products"
+                className={buttonVariants({
+                  size: "sm",
+                  className: "hidden sm:flex items-center gap-1",
+                })}
+              >
+                Products <ArrowRight className="size-5 ml-1.5" />
+              </Link>
+            )}
           </div>
         </div>
       </MaxWidthWrapper>

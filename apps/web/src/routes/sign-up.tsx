@@ -13,7 +13,7 @@ export const Route = createFileRoute("/sign-up")({
 });
 
 function RouteComponent() {
-  const { mutate, isPending } = useSignUp();
+  const { mutate } = useSignUp();
   const navigate = useNavigate();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -67,7 +67,7 @@ function RouteComponent() {
             {(field) => <field.TextField type="password" label="Password" />}
           </form.AppField>
           <form.AppField name="panId">
-            {(field) => <field.TextField type="text" label="Pan-Id" />}
+            {(field) => <field.TextField type="text" label="Pan-Id" placeholder="ABCDE1234" />}
           </form.AppField>
           <form.AppField name="imageId">
             {(field) => <field.TextField type="file" label="Id Image" />}
