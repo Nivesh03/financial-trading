@@ -18,7 +18,10 @@ export const signUpContoller = async (req: Request, res: Response) => {
       password: passwordHash,
     };
     const token = await register(newData);
-    res.cookie("token", token, {
+    if (!token.success) {
+      return handleError(res, "Signup failed", "Signup failed", 400);
+    }
+    res.cookie("token", token.data, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
@@ -34,7 +37,7 @@ export const signInController = async (req: Request, res: Response) => {
   try {
     const data = validateBody(SignInSchema, req.body);
     const token = await signIn(data);
-    if (!token) {
+    if (!token.success) {
       return handleError(
         res,
         "Invalid email or password",
@@ -42,7 +45,7 @@ export const signInController = async (req: Request, res: Response) => {
         401
       );
     }
-    res.cookie("token", token, {
+    res.cookie("token", token.data, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
@@ -73,7 +76,7 @@ export const getUserController = async (req: Request, res: Response) => {
     );
   }
   const user = await getUser(token);
-  if (!user) {
+  if (!user.success) {
     return handleError(
       res,
       "User not found for given token",
@@ -81,6 +84,5 @@ export const getUserController = async (req: Request, res: Response) => {
       401
     );
   }
-  handleSuccess(res, user, "User retrieved successfully");
+  handleSuccess(res, user.data, "User retrieved successfully");
 };
-

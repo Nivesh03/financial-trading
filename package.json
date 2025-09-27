@@ -9,6 +9,8 @@
   "scripts": {
     "dev": "bun --filter '*' dev",
     "start": "bun --filter '*' start",
+    "dev:server": "bun --filter server dev",
+    "dev:web": "bun --filter web dev",
     "db:generate": "bun --filter server db:generate",
     "db:migrate": "bun --filter server db:migrate",
     "db:studio": "bun --filter server db:studio",

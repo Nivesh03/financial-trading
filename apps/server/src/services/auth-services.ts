@@ -6,40 +6,50 @@ import type { SignIn } from "../types/user-schema";
 const JWT_SECRET = process.env.JWT_SECRET || "awbeiqgsse98ryhzs";
 
 export const register = async (data: NewUser) => {
-  const newUser = await db.transaction(async (tx) => {
-    const [newUser] = await tx.insert(user).values(data).returning();
-    if (!newUser) throw new Error("Error creating new user");
-    await tx.insert(wallet).values({
-      userId: newUser.id,
+  try {
+    const newUser = await db.transaction(async (tx) => {
+      console.log("----in transaction ----",data)
+      const [newUser] = await tx.insert(user).values(data).returning();
+      console.log(newUser)
+      if (!newUser) throw new Error("Error creating new user");
+      await tx.insert(wallet).values({
+        userId: newUser.id,
+      });
+      return newUser;
     });
-    return newUser;
-  });
-  if (!newUser) {
-    throw new Error("Error creating User");
+    if (!newUser) {
+      throw new Error("Error creating User");
+    }
+    const token = jwt.sign(newUser.email, JWT_SECRET);
+    await createSession(newUser.id, token);
+    return { success: true, data: token };
+  } catch (error) {
+    return { success: false, data: null };
   }
-  const token = jwt.sign(newUser.email, JWT_SECRET);
-  await createSession(newUser.id, token);
-  return token;
 };
 
 export const signIn = async (data: SignIn) => {
-  const { email, password } = data;
-  const existingUser = await db.query.user.findFirst({
-    where: eq(user.email, email),
-  });
-  if (!existingUser) {
-    throw new Error("Invalid credentials");
+  try {
+    const { email, password } = data;
+    const existingUser = await db.query.user.findFirst({
+      where: eq(user.email, email),
+    });
+    if (!existingUser) {
+      return { success: false, data: null };
+    }
+    const validPassword = await Bun.password.verify(
+      password,
+      existingUser.password
+    );
+    if (!validPassword) {
+      return { success: false, data: null };
+    }
+    const token = jwt.sign(email, JWT_SECRET);
+    await createSession(existingUser.id, token);
+    return { success: true, data: token };
+  } catch (error) {
+    return { success: false, data: null };
   }
-  const validPassword = await Bun.password.verify(
-    password,
-    existingUser.password
-  );
-  if (!validPassword) {
-    throw new Error("Invalid credentials");
-  }
-  const token = jwt.sign(email, JWT_SECRET);
-  await createSession(existingUser.id, token);
-  return token;
 };
 
 export const createSession = async (userId: string, token: string) => {
@@ -62,14 +72,18 @@ export const removeSession = async (token: string) => {
 };
 
 export const getUser = async (token: string) => {
-  const sessionData = await db.query.session.findFirst({
-    where: eq(session.token, token),
-  });
-  if (!sessionData) {
-    throw new Error("Session not found");
+  try {
+    const sessionData = await db.query.session.findFirst({
+      where: eq(session.token, token),
+    });
+    if (!sessionData) {
+      return { success: false, data: null };
+    }
+    const userData = await db.query.user.findFirst({
+      where: eq(user.id, sessionData.userId),
+    });
+    return { success: true, data: { ...userData, password: undefined } };
+  } catch (error) {
+    return { success: false, data: null };
   }
-  const userData = await db.query.user.findFirst({
-    where: eq(user.id, sessionData.userId),
-  });
-  return { ...userData, password: undefined };
 };

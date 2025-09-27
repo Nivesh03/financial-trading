@@ -12,10 +12,11 @@ export const handleTransaction = async (req: Request, res: Response) => {
   const body = req.body;
   const { productId, quantity } = validateBody(BuySchema, body);
   const { token } = req.cookies;
-  const { id: userId } = await getUser(token);
-  if (!userId) {
+  const user = await getUser(token);
+  if (!user.success || !user.data?.id) {
     return handleError(res, new Error("Unauthorized"), "You must be logged in");
   }
+  const { id: userId } = user.data;
   const productDetails = await getProductDetails(productId);
   if (!productDetails || !productDetails.pricePerUnit) {
     return handleError(
