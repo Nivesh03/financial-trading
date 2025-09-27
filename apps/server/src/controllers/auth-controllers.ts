@@ -7,6 +7,7 @@ import {
   signIn,
 } from "../services/auth-services";
 import { SignInSchema, SignUpSchema } from "../types/user-schema";
+import { handleError, handleSuccess } from "../utils/response";
 
 export const signUpContoller = async (req: Request, res: Response) => {
   try {
@@ -23,21 +24,9 @@ export const signUpContoller = async (req: Request, res: Response) => {
       sameSite: "strict",
       maxAge: 24 * 60 * 60 * 1000,
     });
-    res.status(201).json({ success: true, message: "Signup successsful" });
+    handleSuccess(res, null, "Signup successful", 201);
   } catch (error) {
-    console.error(error);
-    if (error instanceof Error) {
-      res.status(400).json({
-        success: false,
-        message: "Validation failed",
-        details: error.message,
-      });
-    }
-    res.status(400).json({
-      success: false,
-      message: "Validation failed",
-      details: "Unknown",
-    });
+    handleError(res, error, "Signup failed", 400);
   }
 };
 
@@ -45,56 +34,53 @@ export const signInController = async (req: Request, res: Response) => {
   try {
     const data = validateBody(SignInSchema, req.body);
     const token = await signIn(data);
-    if (!token)
-      return res
-        .status(401)
-        .json({ success: false, message: "Invalid credentials" });
+    if (!token) {
+      return handleError(
+        res,
+        "Invalid email or password",
+        "Invalid credentials",
+        401
+      );
+    }
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 24 * 60 * 60 * 1000,
     });
-    res.json({ success: true, message: "Login successsful" });
+    handleSuccess(res, null, "Login successful");
   } catch (error) {
-    console.error(error);
-    if (error instanceof Error) {
-      res.status(400).json({
-        success: false,
-        message: "Validation failed",
-        details: error.message,
-      });
-    }
-    res.status(400).json({
-      success: false,
-      message: "Validation failed",
-      details: "Unknown",
-    });
+    handleError(res, error, "Validation failed", 400);
   }
 };
 
 export const signOutContoller = async (req: Request, res: Response) => {
   const { token } = req.cookies;
-  if (!token) {
-    res.json({ success: true, message: "Logged out" });
+  if (token) {
+    await removeSession(token);
   }
   res.clearCookie("token");
-  await removeSession(token);
-  res.json({ success: true, message: "Logged out" });
+  handleSuccess(res, null, "Logged out");
 };
 export const getUserController = async (req: Request, res: Response) => {
   const { token } = req.cookies;
   if (!token) {
-    return res
-      .status(401)
-      .json({ success: false, message: "Invalid credentials" });
+    return handleError(
+      res,
+      "Unauthorized: No token provided",
+      "Invalid credentials",
+      401
+    );
   }
   const user = await getUser(token);
   if (!user) {
-    return res
-      .status(401)
-      .json({ success: false, message: "Invalid credentials" });
+    return handleError(
+      res,
+      "User not found for given token",
+      "Invalid credentials",
+      401
+    );
   }
-  res.json({ success: true, user });
+  handleSuccess(res, user, "User retrieved successfully");
 };
 

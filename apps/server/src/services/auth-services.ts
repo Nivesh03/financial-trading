@@ -1,12 +1,19 @@
 import { eq } from "drizzle-orm";
 import jwt from "jsonwebtoken";
 import { db } from "../db/drizzle";
-import { session, user, type NewUser } from "../db/schema";
+import { session, user, wallet, type NewUser } from "../db/schema";
 import type { SignIn } from "../types/user-schema";
 const JWT_SECRET = process.env.JWT_SECRET || "awbeiqgsse98ryhzs";
 
 export const register = async (data: NewUser) => {
-  const [newUser] = await db.insert(user).values(data).returning();
+  const newUser = await db.transaction(async (tx) => {
+    const [newUser] = await tx.insert(user).values(data).returning();
+    if (!newUser) throw new Error("Error creating new user");
+    await tx.insert(wallet).values({
+      userId: newUser.id,
+    });
+    return newUser;
+  });
   if (!newUser) {
     throw new Error("Error creating User");
   }
