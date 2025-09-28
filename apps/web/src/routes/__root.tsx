@@ -24,6 +24,24 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     );
     return { user };
   },
+  head: () => ({
+    meta: [
+      {
+        charSet: "utf-8",
+      },
+      {
+        name: "description",
+        content: "start your investing journey",
+      },
+      {
+        name: "viewport",
+        content: "width=device-width, initial-scale=1",
+      },
+      {
+        title: "Financial Trading",
+      },
+    ],
+  }),
   notFoundComponent: NotFound,
   shellComponent: RootDocument,
 });
