@@ -1,6 +1,20 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
+// bg-green-500
+// bg-red-500
+// bg-orange-500
+const riskLevelColor = {
+  LOW: "green-500",
+  MODERATE: "orange-500",
+  HIGH: "red-500",
+} as const;
+
+export type RiskLevel = keyof typeof riskLevelColor;
+
+export function getColor(riskLevel: RiskLevel) {
+  return riskLevelColor[riskLevel];
+}
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }

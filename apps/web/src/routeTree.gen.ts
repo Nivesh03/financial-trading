@@ -14,11 +14,8 @@ import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductsIndexRouteImport } from './routes/products/index'
-import { Route as DemoTableRouteImport } from './routes/demo.table'
 import { Route as ProductsIdIndexRouteImport } from './routes/products/$id/index'
 import { Route as ProductsIdCheckoutRouteImport } from './routes/products/$id/checkout'
-import { Route as DemoFormSimpleRouteImport } from './routes/demo.form.simple'
-import { Route as DemoFormAddressRouteImport } from './routes/demo.form.address'
 
 const SignUpRoute = SignUpRouteImport.update({
   id: '/sign-up',
@@ -45,11 +42,6 @@ const ProductsIndexRoute = ProductsIndexRouteImport.update({
   path: '/products/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoTableRoute = DemoTableRouteImport.update({
-  id: '/demo/table',
-  path: '/demo/table',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ProductsIdIndexRoute = ProductsIdIndexRouteImport.update({
   id: '/products/$id/',
   path: '/products/$id/',
@@ -60,26 +52,13 @@ const ProductsIdCheckoutRoute = ProductsIdCheckoutRouteImport.update({
   path: '/products/$id/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoFormSimpleRoute = DemoFormSimpleRouteImport.update({
-  id: '/demo/form/simple',
-  path: '/demo/form/simple',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoFormAddressRoute = DemoFormAddressRouteImport.update({
-  id: '/demo/form/address',
-  path: '/demo/form/address',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
-  '/demo/table': typeof DemoTableRoute
   '/products': typeof ProductsIndexRoute
-  '/demo/form/address': typeof DemoFormAddressRoute
-  '/demo/form/simple': typeof DemoFormSimpleRoute
   '/products/$id/checkout': typeof ProductsIdCheckoutRoute
   '/products/$id': typeof ProductsIdIndexRoute
 }
@@ -88,10 +67,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
-  '/demo/table': typeof DemoTableRoute
   '/products': typeof ProductsIndexRoute
-  '/demo/form/address': typeof DemoFormAddressRoute
-  '/demo/form/simple': typeof DemoFormSimpleRoute
   '/products/$id/checkout': typeof ProductsIdCheckoutRoute
   '/products/$id': typeof ProductsIdIndexRoute
 }
@@ -101,10 +77,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
-  '/demo/table': typeof DemoTableRoute
   '/products/': typeof ProductsIndexRoute
-  '/demo/form/address': typeof DemoFormAddressRoute
-  '/demo/form/simple': typeof DemoFormSimpleRoute
   '/products/$id/checkout': typeof ProductsIdCheckoutRoute
   '/products/$id/': typeof ProductsIdIndexRoute
 }
@@ -115,10 +88,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/sign-in'
     | '/sign-up'
-    | '/demo/table'
     | '/products'
-    | '/demo/form/address'
-    | '/demo/form/simple'
     | '/products/$id/checkout'
     | '/products/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -127,10 +97,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/sign-in'
     | '/sign-up'
-    | '/demo/table'
     | '/products'
-    | '/demo/form/address'
-    | '/demo/form/simple'
     | '/products/$id/checkout'
     | '/products/$id'
   id:
@@ -139,10 +106,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/sign-in'
     | '/sign-up'
-    | '/demo/table'
     | '/products/'
-    | '/demo/form/address'
-    | '/demo/form/simple'
     | '/products/$id/checkout'
     | '/products/$id/'
   fileRoutesById: FileRoutesById
@@ -152,10 +116,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   SignInRoute: typeof SignInRoute
   SignUpRoute: typeof SignUpRoute
-  DemoTableRoute: typeof DemoTableRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
-  DemoFormAddressRoute: typeof DemoFormAddressRoute
-  DemoFormSimpleRoute: typeof DemoFormSimpleRoute
   ProductsIdCheckoutRoute: typeof ProductsIdCheckoutRoute
   ProductsIdIndexRoute: typeof ProductsIdIndexRoute
 }
@@ -197,13 +158,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/table': {
-      id: '/demo/table'
-      path: '/demo/table'
-      fullPath: '/demo/table'
-      preLoaderRoute: typeof DemoTableRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/products/$id/': {
       id: '/products/$id/'
       path: '/products/$id'
@@ -218,20 +172,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsIdCheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/form/simple': {
-      id: '/demo/form/simple'
-      path: '/demo/form/simple'
-      fullPath: '/demo/form/simple'
-      preLoaderRoute: typeof DemoFormSimpleRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/form/address': {
-      id: '/demo/form/address'
-      path: '/demo/form/address'
-      fullPath: '/demo/form/address'
-      preLoaderRoute: typeof DemoFormAddressRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -240,10 +180,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   SignInRoute: SignInRoute,
   SignUpRoute: SignUpRoute,
-  DemoTableRoute: DemoTableRoute,
   ProductsIndexRoute: ProductsIndexRoute,
-  DemoFormAddressRoute: DemoFormAddressRoute,
-  DemoFormSimpleRoute: DemoFormSimpleRoute,
   ProductsIdCheckoutRoute: ProductsIdCheckoutRoute,
   ProductsIdIndexRoute: ProductsIdIndexRoute,
 }

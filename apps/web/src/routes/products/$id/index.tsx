@@ -1,26 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { useAddToWatchlist } from "@/hooks/use-dashboard";
 import { allProductQueries } from "@/hooks/use-products";
-import { formatDateIST, formatPrice } from "@/lib/utils";
+import { formatDateIST, formatPrice, getColor } from "@/lib/utils";
 import { createFileRoute, notFound, useRouter } from "@tanstack/react-router";
 import { ArrowRight, Minus, Plus } from "lucide-react";
 import { useState } from "react";
 import { faker } from "@faker-js/faker";
 import { LineChart } from "@/components/ui/line-chart";
-// bg-green-500
-// bg-red-500
-// bg-orange-500
-const riskLevelColor = {
-  LOW: "green-500",
-  MODERATE: "orange-500",
-  HIGH: "red-500",
-} as const;
 
-type RiskLevel = keyof typeof riskLevelColor;
-
-function getColor(riskLevel: RiskLevel) {
-  return riskLevelColor[riskLevel];
-}
 
 export const Route = createFileRoute("/products/$id/")({
   beforeLoad: async ({ params: { id }, context: { queryClient } }) => {

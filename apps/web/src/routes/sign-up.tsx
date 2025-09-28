@@ -4,7 +4,7 @@ import {
   useRouter,
   Link,
 } from "@tanstack/react-router";
-import { SignUpSchema } from "../../types/user-schema";
+import { SignUpSchema } from "../types/user-schema";
 import { useAppForm } from "../hooks/form";
 import { useSignUp } from "@/hooks/use-user";
 import { useQueryClient } from "@tanstack/react-query";
@@ -53,8 +53,8 @@ function RouteComponent() {
     },
   });
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background">
-      <Card className="w-full max-w-md">
+    <div className="flex items-center justify-center min-h-screen">
+      <Card className="w-full max-w-md rounded-none">
         <CardHeader>
           <CardTitle>Sign Up</CardTitle>
           <CardDescription>Create an account to get started.</CardDescription>

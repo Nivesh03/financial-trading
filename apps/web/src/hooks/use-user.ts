@@ -4,7 +4,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
-import { type SignIn, type SignUp } from "../../types/user-schema";
+import { type SignIn, type SignUp } from "../types/user-schema";
 import { useRouter } from "@tanstack/react-router";
 import { toast } from "sonner";
 const API_URL = import.meta.env.VITE_API_URL;

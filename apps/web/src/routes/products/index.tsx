@@ -1,26 +1,24 @@
-import React from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
 import MaxWidthWrapper from "@/components/max-width-wrapper";
 import { allProductQueries } from "@/hooks/use-products";
+import type { Product } from "@/types/product-schema";
+import type { RankingInfo } from "@tanstack/match-sorter-utils";
+import { rankItem } from "@tanstack/match-sorter-utils";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import type {
+  Column,
+  ColumnDef,
+  ColumnFiltersState,
+  FilterFn
+} from "@tanstack/react-table";
 import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  sortingFns,
-  useReactTable,
+  useReactTable
 } from "@tanstack/react-table";
-import { compareItems, rankItem } from "@tanstack/match-sorter-utils";
-import type {
-  Column,
-  ColumnDef,
-  ColumnFiltersState,
-  FilterFn,
-  SortingFn,
-} from "@tanstack/react-table";
-import type { RankingInfo } from "@tanstack/match-sorter-utils";
-import type { Product } from "types/product-schema";
+import React from "react";
 export const Route = createFileRoute("/products/")({
   beforeLoad: async ({ context: { queryClient } }) => {
     const products = await queryClient.ensureQueryData(
@@ -30,6 +28,7 @@ export const Route = createFileRoute("/products/")({
   },
   component: RouteComponent,
 });
+
 declare module "@tanstack/react-table" {
   interface FilterFns {
     fuzzy: FilterFn<unknown>;
@@ -50,22 +49,6 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 
   // Return if the item should be filtered in/out
   return itemRank.passed;
-};
-
-// Define a custom fuzzy sort function that will sort by rank if the row has ranking information
-const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
-  let dir = 0;
-
-  // Only sort by rank if the column has ranking information
-  if (rowA.columnFiltersMeta[columnId]) {
-    dir = compareItems(
-      rowA.columnFiltersMeta[columnId]?.itemRank!,
-      rowB.columnFiltersMeta[columnId]?.itemRank!
-    );
-  }
-
-  // Provide an alphanumeric fallback for when the item ranks are equal
-  return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir;
 };
 
 function RouteComponent() {
@@ -142,19 +125,19 @@ function RouteComponent() {
 
   return (
     <MaxWidthWrapper className="p-6 ">
-      <div className="bg-gray-900 p-6 rounded-xl">
+      <div className="bg-slate-50 p-6 rounded-xl border border-[color:var(--border)]">
         <div>
           <DebouncedInput
             value={globalFilter ?? ""}
             onChange={(value) => setGlobalFilter(String(value))}
-            className="w-full p-3 bg-gray-800 text-white rounded-lg border border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+            className="w-full p-3 bg-white text-[color:var(--foreground)] rounded-lg border border-[color:var(--border)] focus:ring-2 focus:ring-[color:var(--primary)] focus:border-transparent outline-none"
             placeholder="Search all columns..."
           />
         </div>
         <div className="h-4" />
-        <div className="overflow-x-auto rounded-lg border border-gray-700">
-          <table className="w-full text-sm text-gray-200">
-            <thead className="bg-gray-800 text-gray-100">
+        <div className="overflow-x-auto rounded-lg border border-[color:var(--border)]">
+          <table className="w-full text-sm text-[color:var(--foreground)]">
+            <thead className="bg-[color:var(--secondary)] text-[color:var(--secondary-foreground)]">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
@@ -162,14 +145,14 @@ function RouteComponent() {
                       <th
                         key={header.id}
                         colSpan={header.colSpan}
-                        className="px-4 py-3 text-left"
+                        className="px-4 py-3 text-left border-b border-[color:var(--border)]"
                       >
                         {header.isPlaceholder ? null : (
                           <>
                             <div
                               {...{
                                 className: header.column.getCanSort()
-                                  ? "cursor-pointer select-none hover:text-blue-400 transition-colors"
+                                  ? "cursor-pointer select-none hover:text-[color:var(--primary)] transition-colors"
                                   : "",
                                 onClick:
                                   header.column.getToggleSortingHandler(),
@@ -197,12 +180,12 @@ function RouteComponent() {
                 </tr>
               ))}
             </thead>
-            <tbody className="divide-y divide-gray-700">
+            <tbody className="divide-y divide-[color:var(--border)]">
               {table.getRowModel().rows.map((row) => {
                 return (
                   <tr
                     key={row.id}
-                    className="hover:bg-gray-800 transition-colors"
+                    className="hover:bg-[color:var(--muted)] transition-colors"
                   >
                     {row.getVisibleCells().map((cell) => {
                       {
@@ -213,6 +196,7 @@ function RouteComponent() {
                           <Link
                             to="/products/$id"
                             params={{ id: cell.row.original.id }}
+                            className="text-gray-700 hover:underline"
                           >
                             {flexRender(
                               cell.column.columnDef.cell,
@@ -229,30 +213,30 @@ function RouteComponent() {
           </table>
         </div>
         <div className="h-4" />
-        <div className="flex flex-wrap items-center gap-2 text-gray-200">
+        <div className="flex flex-wrap items-center gap-2 text-[color:var(--foreground)]">
           <button
-            className="px-3 py-1 bg-gray-800 rounded-md hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-3 py-1 bg-[color:var(--muted)] rounded-md hover:bg-[color:var(--secondary)] disabled:opacity-50 disabled:cursor-not-allowed border border-[color:var(--border)]"
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
           >
             {"<<"}
           </button>
           <button
-            className="px-3 py-1 bg-gray-800 rounded-md hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-3 py-1 bg-[color:var(--muted)] rounded-md hover:bg-[color:var(--secondary)] disabled:opacity-50 disabled:cursor-not-allowed border border-[color:var(--border)]"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
             {"<"}
           </button>
           <button
-            className="px-3 py-1 bg-gray-800 rounded-md hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-3 py-1 bg-[color:var(--muted)] rounded-md hover:bg-[color:var(--secondary)] disabled:opacity-50 disabled:cursor-not-allowed border border-[color:var(--border)]"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
             {">"}
           </button>
           <button
-            className="px-3 py-1 bg-gray-800 rounded-md hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-3 py-1 bg-[color:var(--muted)] rounded-md hover:bg-[color:var(--secondary)] disabled:opacity-50 disabled:cursor-not-allowed border border-[color:var(--border)]"
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
           >
@@ -274,7 +258,7 @@ function RouteComponent() {
                 const page = e.target.value ? Number(e.target.value) - 1 : 0;
                 table.setPageIndex(page);
               }}
-              className="w-16 px-2 py-1 bg-gray-800 rounded-md border border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+              className="w-16 px-2 py-1 bg-white rounded-md border border-[color:var(--border)] focus:ring-2 focus:ring-[color:var(--primary)] focus:border-transparent outline-none"
             />
           </span>
           <select
@@ -282,7 +266,7 @@ function RouteComponent() {
             onChange={(e) => {
               table.setPageSize(Number(e.target.value));
             }}
-            className="px-2 py-1 bg-gray-800 rounded-md border border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+            className="px-2 py-1 bg-white rounded-md border border-[color:var(--border)] focus:ring-2 focus:ring-[color:var(--primary)] focus:border-transparent outline-none"
           >
             {[10, 20, 30, 40, 50].map((pageSize) => (
               <option key={pageSize} value={pageSize}>
@@ -291,18 +275,18 @@ function RouteComponent() {
             ))}
           </select>
         </div>
-        <div className="mt-4 text-gray-400">
+        <div className="mt-4 text-[color:var(--muted-foreground)]">
           {table.getPrePaginationRowModel().rows.length} Rows
         </div>
         <div className="mt-4 flex gap-2">
           <button
             onClick={() => rerender()}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            className="px-4 py-2 bg-[color:var(--primary)] text-[color:var(--primary-foreground)] rounded-md hover:bg-[color:var(--secondary)] hover:text-[color:var(--secondary-foreground)] transition-colors"
           >
             Force Rerender
           </button>
         </div>
-        <pre className="mt-4 p-4 bg-gray-800 rounded-lg text-gray-300 overflow-auto">
+        <pre className="mt-4 p-4 bg-white rounded-lg text-[color:var(--muted-foreground)] overflow-auto border border-[color:var(--border)]">
           {JSON.stringify(
             {
               columnFilters: table.getState().columnFilters,
@@ -326,7 +310,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
       value={(columnFilterValue ?? "") as string}
       onChange={(value) => column.setFilterValue(value)}
       placeholder={`Search...`}
-      className="w-full px-2 py-1 bg-gray-700 text-white rounded-md border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+      className="w-full px-2 py-1 bg-slate-50 text-black rounded-md border border-gray-600 focus:ring-2 focus:ring-[color:var(--primary)] focus:border-transparent outline-none"
     />
   );
 }
