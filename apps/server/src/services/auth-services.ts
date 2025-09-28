@@ -82,6 +82,9 @@ export const getUser = async (token: string) => {
     const userData = await db.query.user.findFirst({
       where: eq(user.id, sessionData.userId),
     });
+    if (!userData) {
+      return { success: false, data: null };
+    }
     return { success: true, data: { ...userData, password: undefined } };
   } catch (error) {
     return { success: false, data: null };

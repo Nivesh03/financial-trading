@@ -32,7 +32,7 @@ const Navbar = () => {
               </Button>
 
               <Button className="cursor-pointer" size={"sm"} variant={"ghost"}>
-                <Link to="/">Dashboard</Link>
+                <Link to="/dashboard">Dashboard</Link>
               </Button>
             </IsLoggedIn>
             <IsLoggedOut>

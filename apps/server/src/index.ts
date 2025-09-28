@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import { authRouter } from "./routes/auth-routes";
 import { productRouter } from "./routes/product-routes";
 import { transactionRouter } from "./routes/transaction-router";
+import dashboardRouter from "./routes/dashboard-routes";
 const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(
@@ -26,6 +27,7 @@ app.get("/", (req, res) =>
 app.use("/auth", authRouter);
 app.use("/products", productRouter);
 app.use("/transactions", transactionRouter);
+app.use("/dashboard", dashboardRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

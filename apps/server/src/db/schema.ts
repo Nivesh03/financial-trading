@@ -139,5 +139,20 @@ export const walletTransaction = pgTable("wallet_transaction", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const watchlist = pgTable(
+  "watchlist",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => product.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (table) => [unique().on(table.userId, table.productId)]
+);
+
 export type NewUser = typeof user.$inferInsert;
 export type User = typeof user.$inferSelect;
