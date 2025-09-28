@@ -101,11 +101,6 @@ function App() {
               </span>{" "}
               say
             </h2>
-            <img
-              src="/snake-2.png"
-              alt=""
-              className="w-24 order-0 lg:order-2"
-            />
           </div>
           <div className="mx-auto grid max-w-2xl grid-cols-1 px-4 lg:mx-0 lg:max-w-none lg:grid-cols-2 gap-y-16">
             <div className="flex flex-auto flex-col gap-4 lg:pr-8 xl:pr-20">

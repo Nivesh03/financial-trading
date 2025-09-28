@@ -8,9 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "awbeiqgsse98ryhzs";
 export const register = async (data: NewUser) => {
   try {
     const newUser = await db.transaction(async (tx) => {
-      console.log("----in transaction ----",data)
       const [newUser] = await tx.insert(user).values(data).returning();
-      console.log(newUser)
       if (!newUser) throw new Error("Error creating new user");
       await tx.insert(wallet).values({
         userId: newUser.id,
@@ -18,9 +16,13 @@ export const register = async (data: NewUser) => {
       return newUser;
     });
     if (!newUser) {
-      throw new Error("Error creating User");
+      return { success: false, data: null };
     }
-    const token = jwt.sign(newUser.email, JWT_SECRET);
+    // Use object payload for JWT
+    const token = jwt.sign(
+      { email: newUser.email, id: newUser.id },
+      JWT_SECRET
+    );
     await createSession(newUser.id, token);
     return { success: true, data: token };
   } catch (error) {
@@ -44,7 +46,7 @@ export const signIn = async (data: SignIn) => {
     if (!validPassword) {
       return { success: false, data: null };
     }
-    const token = jwt.sign(email, JWT_SECRET);
+    const token = jwt.sign({ email, id: existingUser.id }, JWT_SECRET);
     await createSession(existingUser.id, token);
     return { success: true, data: token };
   } catch (error) {
