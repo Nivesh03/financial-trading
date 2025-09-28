@@ -1,9 +1,9 @@
 import z from "zod";
 
 export const SignUpSchema = z.object({
-  name: z.string(),
+  name: z.string().min(1, "Provide a name"),
   email: z.email(),
-  password: z.string().min(6, "Passoword must be atleast 6 character long"),
+  password: z.string().min(6, "Password must be atleast 6 character long"),
   panId: z.string().length(10, "Pan Id is 10 charatcer long"),
   imageId: z.string(),
 });

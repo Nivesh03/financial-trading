@@ -5,9 +5,11 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import z from "zod";
 import { allProductQueries } from "@/hooks/use-products";
+import { toast } from "sonner";
 export const Route = createFileRoute("/products/$id/checkout")({
   beforeLoad: async ({ params: { id }, context: { queryClient, user } }) => {
     if (!user) {
+      toast.error("Must be logged in")
       throw redirect({ to: "/" });
     }
     const product = await queryClient.ensureQueryData(

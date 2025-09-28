@@ -5,6 +5,7 @@ import {
 } from "@tanstack/react-query";
 import axios from "axios";
 import { useRouter } from "@tanstack/react-router";
+import { toast } from "sonner";
 const API_URL = import.meta.env.VITE_API_URL;
 
 const getPortfolio = async () => {
@@ -51,6 +52,31 @@ export const useRemoveFromWatchlist = () => {
       return res.data;
     },
     onSuccess: () => {
+      toast.success("Deleted from watchlist");
+      queryClient.invalidateQueries({ queryKey: ["dashboard", "watchlist"] });
+      router.invalidate();
+    },
+  });
+};
+
+export const useAddToWatchlist = () => {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  return useMutation({
+    mutationFn: async (productId: string) => {
+      const res = await axios.post(
+        `${API_URL}/dashboard/watchlist/${productId}`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      return res.data;
+    },
+    onSuccess: () => {
+      toast.success("Added to watchlist", {
+        description: "View in dashboard",
+      });
       queryClient.invalidateQueries({ queryKey: ["dashboard", "watchlist"] });
       router.invalidate();
     },

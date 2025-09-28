@@ -11,6 +11,7 @@ import type { QueryClient } from "@tanstack/react-query";
 import Navbar from "@/components/navbar";
 import { allAuthQueries } from "@/hooks/use-user";
 import NotFound from "@/components/not-found";
+import { Toaster } from "sonner";
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -50,6 +51,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             ]}
           />
         )}
+        <Toaster richColors />
       </main>
     </div>
   );

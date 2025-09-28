@@ -1,7 +1,15 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { SignInSchema } from "../../types/user-schema";
 import { useAppForm } from "../hooks/form";
 import { useSignIn } from "@/hooks/use-user";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export const Route = createFileRoute("/sign-in")({
   component: RouteComponent,
@@ -28,30 +36,44 @@ function RouteComponent() {
   });
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
-      <div className="min-w-md">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle>Sign In</CardTitle>
+          <CardDescription>
+            Enter your credentials to access your account.
+          </CardDescription>
+        </CardHeader>
         <form
           onSubmit={(e) => {
             e.preventDefault();
             e.stopPropagation();
             form.handleSubmit();
           }}
-          className="space-y-6"
         >
-          <form.AppField name="email">
-            {(field) => <field.TextField type="email" label="Email" />}
-          </form.AppField>
+          <CardContent className="space-y-4">
+            <form.AppField name="email">
+              {(field) => <field.TextField type="email" label="Email" />}
+            </form.AppField>
 
-          <form.AppField name="password">
-            {(field) => <field.TextField type="password" label="Password" />}
-          </form.AppField>
-
-          <div className="flex justify-end">
-            <form.AppForm>
-              <form.SubscribeButton label="Submit" />
-            </form.AppForm>
-          </div>
+            <form.AppField name="password">
+              {(field) => <field.TextField type="password" label="Password" />}
+            </form.AppField>
+          </CardContent>
+          <CardFooter className="flex flex-col gap-4">
+            <div className="flex mt-3 justify-end w-full">
+              <form.AppForm>
+                <form.SubscribeButton label="Sign In" />
+              </form.AppForm>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Don't have an account?{" "}
+              <Link to="/sign-up" className="text-primary hover:underline">
+                Sign up
+              </Link>
+            </p>
+          </CardFooter>
         </form>
-      </div>
+      </Card>
     </div>
   );
 }

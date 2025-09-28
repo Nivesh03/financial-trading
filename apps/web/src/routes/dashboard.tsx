@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
   dashboardQueries,
@@ -8,8 +8,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/loader";
 import { formatPrice } from "@/lib/utils";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/dashboard")({
+  beforeLoad: ({ context: { user } }) => {
+    if (!user) {
+      toast.error("Sign in to view dashboard");
+      throw redirect({ to: "/sign-in" });
+    }
+  },
   component: RouteComponent,
 });
 
@@ -138,16 +145,16 @@ function RouteComponent() {
             {watchlist?.length > 0 ? (
               watchlist.map((item: any) => (
                 <tr key={item.id} className="border-b">
-                  <td className="p-2">{item.product.name}</td>
-                  <td className="p-2">{item.product.symbol}</td>
+                  <td className="p-2">{item.name}</td>
+                  <td className="p-2">{item.symbol}</td>
                   <td className="text-right p-2">
-                    {formatPrice(item.product.currentPrice)}
+                    {formatPrice(item.pricePerUnit)}
                   </td>
                   <td className="text-right p-2">
                     <Button
                       variant="destructive"
                       size="sm"
-                      onClick={() => removeFromWatchlist(item.product.id)}
+                      onClick={() => removeFromWatchlist(item.id)}
                     >
                       Remove
                     </Button>

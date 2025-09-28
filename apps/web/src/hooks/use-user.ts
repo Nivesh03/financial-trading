@@ -3,9 +3,10 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { type SignIn, type SignUp } from "../../types/user-schema";
 import { useRouter } from "@tanstack/react-router";
+import { toast } from "sonner";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const getUser = async () => {
@@ -34,9 +35,22 @@ export const useSignIn = () => {
       return res.data;
     },
     onSuccess: async () => {
+      toast.success("Sign in successful");
       await queryClient.invalidateQueries();
       router.invalidate();
       router.navigate({ to: "/" });
+    },
+    onError: (err) => {
+      if (err instanceof AxiosError) {
+        console.log(err.response);
+        toast.error("Sign in failed", {
+          description:
+            `${err.response?.data.message} ` || "Invalid credentials",
+        });
+      }
+      toast.error("Sign in failed", {
+        description: "Invalid credentials",
+      });
     },
   });
 };
@@ -52,9 +66,15 @@ export const useSignUp = () => {
       return res.data;
     },
     onSuccess: async () => {
+      toast.success("Sign up successful");
       await queryClient.invalidateQueries();
       router.invalidate();
       router.navigate({ to: "/" });
+    },
+    onError: () => {
+      toast.error("Sign up failed", {
+        description: "Please try again later",
+      });
     },
   });
 };
@@ -72,6 +92,7 @@ export const useLogOut = () => {
       );
     },
     onSuccess: async () => {
+      toast.success("Sign out successful");
       await queryClient.invalidateQueries();
       router.invalidate();
       router.navigate({ to: "/" });
